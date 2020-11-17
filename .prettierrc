@@ -1,6 +1,4 @@
 {
-  "arrowParens": "avoid",
-  "bracketSpacing": false,
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": false,
@@ -10,7 +8,6 @@
   "proseWrap": "always",
   "quoteProps": "as-needed",
   "requirePragma": false,
-  "semi": false,
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "all",
