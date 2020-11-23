@@ -2,94 +2,110 @@
 // https://github.com/donavon/hook-flow
 // http://localhost:3000/isolated/examples/hook-flow.js
 
-import * as React from 'react'
+import * as React from 'react';
 
 function Child() {
-  console.log('%c    Child: render start', 'color: MediumSpringGreen')
+  debugger;
+  console.log('%c    Child: render start', 'color: MediumSpringGreen');
 
   const [count, setCount] = React.useState(() => {
-    console.log('%c    Child: useState(() => 0)', 'color: tomato')
-    return 0
-  })
+    debugger;
+    console.log('%c    Child: useState(() => 0)', 'color: tomato');
+    return 0;
+  });
 
   React.useEffect(() => {
-    console.log('%c    Child: useEffect(() => {})', 'color: LightCoral')
+    debugger;
+    console.log('%c    Child: useEffect(() => {})', 'color: LightCoral');
     return () => {
+      debugger;
       console.log(
         '%c    Child: useEffect(() => {}) cleanup 🧹',
         'color: LightCoral',
-      )
-    }
-  })
+      );
+    };
+  });
 
   React.useEffect(() => {
+    debugger;
     console.log(
       '%c    Child: useEffect(() => {}, [])',
       'color: MediumTurquoise',
-    )
+    );
     return () => {
+      debugger;
       console.log(
         '%c    Child: useEffect(() => {}, []) cleanup 🧹',
         'color: MediumTurquoise',
-      )
-    }
-  }, [])
+      );
+    };
+  }, []);
 
   React.useEffect(() => {
-    console.log('%c    Child: useEffect(() => {}, [count])', 'color: HotPink')
+    debugger;
+    console.log('%c    Child: useEffect(() => {}, [count])', 'color: HotPink');
     return () => {
+      debugger;
       console.log(
         '%c    Child: useEffect(() => {}, [count]) cleanup 🧹',
         'color: HotPink',
-      )
-    }
-  }, [count])
+      );
+    };
+  }, [count]);
 
   const element = (
-    <button onClick={() => setCount(previousCount => previousCount + 1)}>
+    <button onClick={() => setCount((previousCount) => previousCount + 1)}>
       {count}
     </button>
-  )
+  );
 
-  console.log('%c    Child: render end', 'color: MediumSpringGreen')
+  console.log('%c    Child: render end', 'color: MediumSpringGreen');
 
-  return element
+  return element;
 }
 
 function App() {
-  console.log('%cApp: render start', 'color: MediumSpringGreen')
+  debugger;
+  console.log('%cApp: render start', 'color: MediumSpringGreen');
 
   const [showChild, setShowChild] = React.useState(() => {
-    console.log('%cApp: useState(() => false)', 'color: tomato')
-    return false
-  })
+    debugger;
+    console.log('%cApp: useState(() => false)', 'color: tomato');
+    return false;
+  });
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {})', 'color: LightCoral')
+    debugger;
+    console.log('%cApp: useEffect(() => {})', 'color: LightCoral');
     return () => {
-      console.log('%cApp: useEffect(() => {}) cleanup 🧹', 'color: LightCoral')
-    }
-  })
+      debugger;
+      console.log('%cApp: useEffect(() => {}) cleanup 🧹', 'color: LightCoral');
+    };
+  });
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {}, [])', 'color: MediumTurquoise')
+    debugger;
+    console.log('%cApp: useEffect(() => {}, [])', 'color: MediumTurquoise');
     return () => {
+      debugger;
       console.log(
         '%cApp: useEffect(() => {}, []) cleanup 🧹',
         'color: MediumTurquoise',
-      )
-    }
-  }, [])
+      );
+    };
+  }, []);
 
   React.useEffect(() => {
-    console.log('%cApp: useEffect(() => {}, [showChild])', 'color: HotPink')
+    debugger;
+    console.log('%cApp: useEffect(() => {}, [showChild])', 'color: HotPink');
     return () => {
+      debugger;
       console.log(
         '%cApp: useEffect(() => {}, [showChild]) cleanup 🧹',
         'color: HotPink',
-      )
-    }
-  }, [showChild])
+      );
+    };
+  }, [showChild]);
 
   const element = (
     <>
@@ -97,7 +113,7 @@ function App() {
         <input
           type="checkbox"
           checked={showChild}
-          onChange={e => setShowChild(e.target.checked)}
+          onChange={(e) => setShowChild(e.target.checked)}
         />{' '}
         show child
       </label>
@@ -113,11 +129,11 @@ function App() {
         {showChild ? <Child /> : null}
       </div>
     </>
-  )
+  );
 
-  console.log('%cApp: render end', 'color: MediumSpringGreen')
+  console.log('%cApp: render end', 'color: MediumSpringGreen');
 
-  return element
+  return element;
 }
 
-export default App
+export default App;
