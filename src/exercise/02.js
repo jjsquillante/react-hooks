@@ -1,19 +1,25 @@
 // useEffect: persistent state
 // http://localhost:3000/isolated/exercise/02.js
 
-import * as React from 'react'
+import React, { useEffect, useState } from 'react';
 
-function Greeting({initialName = ''}) {
-  // 🐨 initialize the state to the value from localStorage
-  // 💰 window.localStorage.getItem('name') || initialName
-  const [name, setName] = React.useState(initialName)
+function useLocalStorage(key, initialName = '') {
+  const [name, setName] = useState(
+    () => window.localStorage.getItem(key) || initialName,
+  );
 
-  // 🐨 Here's where you'll use `React.useEffect`.
-  // The callback should set the `name` in localStorage.
-  // 💰 window.localStorage.setItem('name', name)
+  useEffect(() => {
+    window.localStorage.setItem(key, name);
+  }, [key, name]);
 
-  function handleChange(event) {
-    setName(event.target.value)
+  return [name, setName];
+}
+
+function Greeting() {
+  const [name, setName] = useLocalStorage('name', 'James');
+
+  function handleChange({ target: { value } }) {
+    setName(value);
   }
   return (
     <div>
@@ -23,11 +29,11 @@ function Greeting({initialName = ''}) {
       </form>
       {name ? <strong>Hello {name}</strong> : 'Please type your name'}
     </div>
-  )
+  );
 }
 
 function App() {
-  return <Greeting />
+  return <Greeting />;
 }
 
-export default App
+export default App;
