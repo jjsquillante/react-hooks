@@ -4,30 +4,10 @@
 import React from 'react';
 import { useLocalStorageState } from '../utils';
 
-function Board({ squares, len, handleSquares, handleHistory }) {
-  const nextValue = calculateNextValue(squares);
-  const winner = calculateWinner(squares);
-  const status = calculateStatus(winner, squares, nextValue);
-
-  function selectSquare(square) {
-    if (winner || squares[square] != null) {
-      return;
-    }
-    const squaresCopy = [...squares];
-    squaresCopy[square] = nextValue;
-    handleSquares((prev) => [...prev, squaresCopy]);
-    handleHistory(len);
-  }
-
-  function restart() {
-    handleSquares([Array(9).fill(null)]);
-    handleHistory(0);
-  }
-
+function Board({ squares, onClick }) {
   function renderSquare(i) {
-    const handleClick = () => selectSquare(i);
     return (
-      <button className="square" onClick={handleClick}>
+      <button className="square" onClick={() => onClick(i)}>
         {squares[i]}
       </button>
     );
@@ -35,7 +15,6 @@ function Board({ squares, len, handleSquares, handleHistory }) {
 
   return (
     <div>
-      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -51,49 +30,68 @@ function Board({ squares, len, handleSquares, handleHistory }) {
         {renderSquare(7)}
         {renderSquare(8)}
       </div>
-      <button className="restart" onClick={restart}>
-        restart
-      </button>
     </div>
   );
 }
 
 function Game() {
-  const [squares, setSquares] = useLocalStorageState('squares', [
+  const [history, setHistory] = useLocalStorageState('tic-tac-toe::history', [
     Array(9).fill(null),
   ]);
-  const [history, setHistory] = useLocalStorageState('history', 0);
-  const squareLength = squares?.length || 0;
-  const handleSquares = (array) => setSquares(array);
-  const handleHistory = (int) => setHistory(int);
+  const [currentStep, setCurrentStep] = useLocalStorageState(
+    'tic-tac-toe::step',
+    0,
+  );
+
+  const currentSquares = history[currentStep]; // determine which array to select based on step
+  const winner = calculateWinner(currentSquares);
+  const nextValue = calculateNextValue(currentSquares);
+  const status = calculateStatus(winner, currentSquares, nextValue);
+
+  function selectSquare(square) {
+    if (winner || currentSquares[square] != null) {
+      return;
+    }
+
+    const newHistory = history.slice(0, currentStep + 1);
+    const squares = [...currentSquares];
+
+    squares[square] = nextValue;
+    setHistory([...newHistory, squares]);
+    setCurrentStep(newHistory.length);
+  }
+
+  function restart() {
+    setHistory([Array(9).fill(null)]);
+    setCurrentStep(0);
+  }
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board
-          squares={squares[history]}
-          len={squareLength}
-          handleSquares={handleSquares}
-          handleHistory={handleHistory}
-        />
+        <Board onClick={selectSquare} squares={currentSquares} />
+        <button className="restart" onClick={restart}>
+          restart
+        </button>
       </div>
-      <div>
-        {squares.map((hist, i, ogArray) => {
-          return (
-            <div style={{ margin: '10px' }}>
-              <button
-                disabled={ogArray.length === 1}
-                onClick={() => {
-                  handleHistory(i);
-                }}
-              >
-                {i === 0
-                  ? 'Initial State'
-                  : `Move: ${i} ${history === i ? '(current)' : ''}`}
-              </button>
-            </div>
-          );
-        })}
+      <div className="game-info">
+        <div>{status}</div>
+        <ol>
+          {history.map((stepSquares, step) => {
+            const desc = step ? `Go to move #${step}` : 'Go to game start';
+            const isCurrentStep = step === currentStep;
+            return (
+              <li key={step}>
+                <button
+                  disabled={isCurrentStep}
+                  onClick={() => setCurrentStep(step)}
+                >
+                  {desc} {isCurrentStep ? '(current)' : null}
+                </button>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </div>
   );
